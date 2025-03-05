@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api, Appointment } from "@/services/api";
-import { Calendar, Clock, Video, User, CheckCircle, XCircle } from "lucide-react";
+import { Calendar, Clock, Video, User, CheckCircle, XCircle, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 

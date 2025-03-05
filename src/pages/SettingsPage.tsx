@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -10,7 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { Bell, Globe, Lock, Shield, CreditCard, Mail, Phone, AlertTriangle } from "lucide-react";
-import { PaymentMethodsManager } from "@/components/payments/PaymentMethodsManager";
+import PaymentMethodsManager from "@/components/payments/PaymentMethodsManager";
 
 const SettingsPage = () => {
   const [emailNotifications, setEmailNotifications] = useState({

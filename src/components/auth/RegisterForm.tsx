@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
+import { api } from "@/services/api";
+import { toast } from "sonner";
 
 const RegisterForm = () => {
   const [email, setEmail] = useState("");
@@ -17,21 +19,33 @@ const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { toast: uiToast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulating registration for now - would be replaced with actual auth
-    setTimeout(() => {
-      setIsLoading(false);
-      toast({
-        title: "Registration successful",
-        description: "Your account has been created. Please sign in.",
-      });
+    try {
+      // Use the API service for registration
+      await api.register(
+        email, 
+        password, 
+        name, 
+        userType as 'patient' | 'doctor'
+      );
+      
+      toast.success("Account created successfully");
       navigate("/login");
-    }, 1500);
+    } catch (error) {
+      console.error(error);
+      uiToast({
+        variant: "destructive",
+        title: "Registration failed",
+        description: error instanceof Error ? error.message : "An unexpected error occurred",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

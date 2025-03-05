@@ -13,6 +13,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import Dashboard from "./pages/Dashboard";
 import ConsultationsPage from "./pages/ConsultationsPage";
+import ProfilePage from "./pages/ProfilePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,7 +39,7 @@ const App = () => (
             <Route path="/messages" element={<Dashboard />} />
             <Route path="/records" element={<Dashboard />} />
             <Route path="/prescriptions" element={<Dashboard />} />
-            <Route path="/profile" element={<Dashboard />} />
+            <Route path="/profile" element={<ProfilePage />} /> {/* Updated route */}
             <Route path="/settings" element={<Dashboard />} />
           </Route>
           

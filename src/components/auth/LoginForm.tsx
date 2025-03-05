@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { api } from "@/services/api";
+import { toast } from "sonner";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -14,23 +16,28 @@ const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { toast: uiToast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulating login for now - would be replaced with actual auth
-    setTimeout(() => {
-      setIsLoading(false);
-      // Mock successful login
-      localStorage.setItem("user", JSON.stringify({ email, role: 'patient' }));
-      toast({
-        title: "Login successful",
-        description: "Welcome to MediConnect",
-      });
+    try {
+      // Use the API service for login
+      const user = await api.login(email, password);
+      
+      toast.success(`Welcome back, ${user.name}`);
       navigate("/dashboard");
-    }, 1500);
+    } catch (error) {
+      console.error(error);
+      uiToast({
+        variant: "destructive",
+        title: "Login failed",
+        description: error instanceof Error ? error.message : "An unexpected error occurred",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

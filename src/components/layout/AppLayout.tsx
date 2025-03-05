@@ -3,14 +3,15 @@ import React, { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import AppSidebar from "./AppSidebar";
+import { api } from "@/services/api";
 
 const AppLayout = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for authentication
-    const user = localStorage.getItem("user");
+    // Check for authentication using the API service
+    const user = api.getCurrentUser();
     if (!user) {
       navigate("/login");
       return;

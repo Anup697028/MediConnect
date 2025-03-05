@@ -15,23 +15,22 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { api } from "@/services/api";
+import { toast } from "sonner";
 
 const AppSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { toast } = useToast();
+  const { toast: uiToast } = useToast();
   
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = api.getCurrentUser();
   
   // Check if current route matches a menu item
   const isActive = (path: string) => location.pathname === path;
   
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    toast({
-      title: "Logged out",
-      description: "You have been successfully logged out.",
-    });
+    api.logout();
+    toast.success("You have been successfully logged out");
     navigate("/login");
   };
 
@@ -63,10 +62,10 @@ const AppSidebar = () => {
           <div className="flex items-center gap-3 p-2 glass rounded-lg mb-4">
             <Avatar>
               <AvatarImage src="" />
-              <AvatarFallback>{user?.email?.[0]?.toUpperCase() || "U"}</AvatarFallback>
+              <AvatarFallback>{user?.name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || "U"}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <span className="font-medium">{user?.email?.split('@')?.[0] || "User"}</span>
+              <span className="font-medium">{user?.name || user?.email?.split('@')?.[0] || "User"}</span>
               <span className="text-xs text-muted-foreground capitalize">{user?.role || "Patient"}</span>
             </div>
           </div>

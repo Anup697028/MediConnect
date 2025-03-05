@@ -1,7 +1,10 @@
 
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Calendar, Home, MessageSquare, FileText, Clock, Video, UserCircle, Settings, LogOut } from "lucide-react";
+import { 
+  Calendar, Home, MessageSquare, FileText, Clock, Video, 
+  UserCircle, Settings, LogOut, Pill, MapPin, CreditCard 
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -17,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { api } from "@/services/api";
 import { toast } from "sonner";
+import { ThemeToggle } from "./ThemeToggle";
 
 const AppSidebar = () => {
   const navigate = useNavigate();
@@ -41,6 +45,9 @@ const AppSidebar = () => {
     { title: "Messages", path: "/messages", icon: MessageSquare },
     { title: "Health Records", path: "/records", icon: FileText },
     { title: "Prescriptions", path: "/prescriptions", icon: Clock },
+    { title: "Medical Shops", path: "/medical-shops", icon: Pill },
+    { title: "Order Tracking", path: "/order-tracking", icon: MapPin },
+    { title: "Payments", path: "/payments", icon: CreditCard },
     { title: "Profile", path: "/profile", icon: UserCircle },
     { title: "Settings", path: "/settings", icon: Settings },
   ];
@@ -48,13 +55,16 @@ const AppSidebar = () => {
   return (
     <Sidebar>
       <SidebarHeader className="p-4">
-        <div className="flex items-center gap-2">
-          <div className="size-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
-            MC
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="size-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
+              MC
+            </div>
+            <div className="font-semibold text-lg">MediConnect</div>
           </div>
-          <div className="font-semibold text-lg">MediConnect</div>
+          <ThemeToggle />
+          <SidebarTrigger className="md:hidden absolute right-4 top-4" />
         </div>
-        <SidebarTrigger className="md:hidden absolute right-4 top-4" />
       </SidebarHeader>
       
       <SidebarContent>

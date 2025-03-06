@@ -9,12 +9,14 @@ interface AppointmentCardProps {
   appointment: Appointment;
   onSetReminder: (appointment: Appointment) => void;
   onCancelAppointment: (appointment: Appointment) => void;
+  onViewDetails: (appointment: Appointment) => void;
 }
 
 export const AppointmentCard = ({
   appointment,
   onSetReminder,
   onCancelAppointment,
+  onViewDetails,
 }: AppointmentCardProps) => {
   const navigate = useNavigate();
 
@@ -29,7 +31,10 @@ export const AppointmentCard = ({
   };
 
   return (
-    <div className="mb-4 hover:shadow-md transition-shadow rounded-lg border bg-card text-card-foreground shadow-sm">
+    <div 
+      className="mb-4 hover:shadow-md transition-shadow rounded-lg border bg-card text-card-foreground shadow-sm cursor-pointer"
+      onClick={() => onViewDetails(appointment)}
+    >
       <div className="p-4">
         <div className="flex justify-between items-start">
           <div className="flex items-start gap-3">
@@ -68,14 +73,17 @@ export const AppointmentCard = ({
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2" onClick={(e) => e.stopPropagation()}>
             {appointment.status === "scheduled" && (
               <>
                 <Button 
                   size="sm" 
                   variant="default"
                   className="w-full"
-                  onClick={() => navigate(`/consultations?appointmentId=${appointment.id}`)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/consultations?appointmentId=${appointment.id}`);
+                  }}
                 >
                   <Video className="h-4 w-4 mr-1" /> Join
                 </Button>
@@ -83,7 +91,10 @@ export const AppointmentCard = ({
                   size="sm" 
                   variant="outline"
                   className="w-full"
-                  onClick={() => onSetReminder(appointment)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onSetReminder(appointment);
+                  }}
                 >
                   <Bell className="h-4 w-4 mr-1" /> Reminder
                 </Button>
@@ -91,7 +102,10 @@ export const AppointmentCard = ({
                   size="sm" 
                   variant="outline"
                   className="w-full text-destructive border-destructive/20"
-                  onClick={() => onCancelAppointment(appointment)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onCancelAppointment(appointment);
+                  }}
                 >
                   <XCircle className="h-4 w-4 mr-1" /> Cancel
                 </Button>
@@ -102,6 +116,10 @@ export const AppointmentCard = ({
                 size="sm" 
                 variant="outline"
                 className="w-full"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onViewDetails(appointment);
+                }}
               >
                 <FileText className="h-4 w-4 mr-1" /> View Notes
               </Button>

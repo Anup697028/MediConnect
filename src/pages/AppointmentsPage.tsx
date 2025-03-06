@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { AppointmentTabs } from "@/components/appointments/AppointmentTabs";
 import { CancelAppointmentDialog } from "@/components/appointments/CancelAppointmentDialog";
 import { ReminderDialog } from "@/components/appointments/ReminderDialog";
+import { AppointmentDetailsDialog } from "@/components/appointments/AppointmentDetailsDialog";
 
 const AppointmentsPage = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -14,6 +15,7 @@ const AppointmentsPage = () => {
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [reminderDialogOpen, setReminderDialogOpen] = useState(false);
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -96,6 +98,11 @@ const AppointmentsPage = () => {
     setReminderDialogOpen(true);
   };
 
+  const handleViewDetailsClick = (appointment: Appointment) => {
+    setSelectedAppointment(appointment);
+    setDetailsDialogOpen(true);
+  };
+
   return (
     <div className="container mx-auto max-w-4xl">
       <div className="flex justify-between items-center mb-6">
@@ -112,6 +119,7 @@ const AppointmentsPage = () => {
         cancelledAppointments={cancelledAppointments}
         onSetReminder={handleSetReminderClick}
         onCancelAppointment={handleCancelAppointmentClick}
+        onViewDetails={handleViewDetailsClick}
       />
 
       <CancelAppointmentDialog 
@@ -124,6 +132,12 @@ const AppointmentsPage = () => {
         open={reminderDialogOpen}
         onOpenChange={setReminderDialogOpen}
         onSetReminder={handleSetReminder}
+      />
+
+      <AppointmentDetailsDialog
+        appointment={selectedAppointment}
+        open={detailsDialogOpen}
+        onOpenChange={setDetailsDialogOpen}
       />
     </div>
   );

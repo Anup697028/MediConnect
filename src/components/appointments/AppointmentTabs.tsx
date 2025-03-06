@@ -13,6 +13,7 @@ interface AppointmentTabsProps {
   cancelledAppointments: Appointment[];
   onSetReminder: (appointment: Appointment) => void;
   onCancelAppointment: (appointment: Appointment) => void;
+  onViewDetails: (appointment: Appointment) => void;
 }
 
 export const AppointmentTabs = ({
@@ -22,6 +23,7 @@ export const AppointmentTabs = ({
   cancelledAppointments,
   onSetReminder,
   onCancelAppointment,
+  onViewDetails,
 }: AppointmentTabsProps) => {
   return (
     <Tabs defaultValue="upcoming">
@@ -47,6 +49,7 @@ export const AppointmentTabs = ({
               appointment={appointment} 
               onSetReminder={onSetReminder}
               onCancelAppointment={onCancelAppointment}
+              onViewDetails={onViewDetails}
             />
           ))
         ) : (
@@ -64,6 +67,7 @@ export const AppointmentTabs = ({
               appointment={appointment} 
               onSetReminder={onSetReminder}
               onCancelAppointment={onCancelAppointment}
+              onViewDetails={onViewDetails}
             />
           ))
         ) : (
@@ -81,6 +85,7 @@ export const AppointmentTabs = ({
               appointment={appointment} 
               onSetReminder={onSetReminder}
               onCancelAppointment={onCancelAppointment}
+              onViewDetails={onViewDetails}
             />
           ))
         ) : (

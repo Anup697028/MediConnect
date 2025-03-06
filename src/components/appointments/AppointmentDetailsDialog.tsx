@@ -1,22 +1,37 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Calendar, Clock, FileText, AlertCircle, Clipboard, User } from "lucide-react";
+import { Calendar, Clock, FileText, AlertCircle, Clipboard, User, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Appointment } from "@/services/api";
 import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 interface AppointmentDetailsDialogProps {
   appointment: Appointment | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onUpdateSymptoms?: (appointment: Appointment, symptoms: string) => Promise<void>;
 }
 
 export const AppointmentDetailsDialog = ({
   appointment,
   open,
   onOpenChange,
+  onUpdateSymptoms,
 }: AppointmentDetailsDialogProps) => {
+  const [editingSymptoms, setEditingSymptoms] = useState(false);
+  const [symptoms, setSymptoms] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Initialize symptoms when appointment changes
+  React.useEffect(() => {
+    if (appointment) {
+      setSymptoms(appointment.symptoms || "");
+    }
+  }, [appointment]);
+
   if (!appointment) return null;
 
   const formatDate = (dateString: string) => {
@@ -27,6 +42,22 @@ export const AppointmentDetailsDialog = ({
       day: "numeric",
       year: "numeric",
     }).format(date);
+  };
+
+  const handleSaveSymptoms = async () => {
+    if (!appointment || !onUpdateSymptoms) return;
+    
+    try {
+      setIsSaving(true);
+      await onUpdateSymptoms(appointment, symptoms);
+      setEditingSymptoms(false);
+      toast.success("Symptoms updated successfully");
+    } catch (error) {
+      console.error("Failed to update symptoms:", error);
+      toast.error("Failed to update symptoms");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -63,17 +94,66 @@ export const AppointmentDetailsDialog = ({
             </div>
           </div>
 
-          {appointment.symptoms && (
-            <div className="flex items-start gap-3">
-              <div className="p-2 rounded-full bg-primary/10">
-                <AlertCircle className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <h3 className="font-medium">Symptoms</h3>
-                <p className="text-sm text-muted-foreground">{appointment.symptoms}</p>
-              </div>
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-full bg-primary/10">
+              <AlertCircle className="h-5 w-5 text-primary" />
             </div>
-          )}
+            <div className="w-full">
+              <div className="flex justify-between items-center">
+                <h3 className="font-medium">Symptoms</h3>
+                {appointment.status === "scheduled" && !editingSymptoms && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => setEditingSymptoms(true)}
+                    className="h-7 text-xs"
+                  >
+                    Edit
+                  </Button>
+                )}
+              </div>
+              
+              {editingSymptoms ? (
+                <div className="mt-2 space-y-2">
+                  <Textarea
+                    placeholder="Describe your symptoms in detail..."
+                    value={symptoms}
+                    onChange={(e) => setSymptoms(e.target.value)}
+                    className="min-h-[100px]"
+                  />
+                  <div className="flex justify-end space-x-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => {
+                        setEditingSymptoms(false);
+                        setSymptoms(appointment.symptoms || "");
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      onClick={handleSaveSymptoms}
+                      disabled={isSaving}
+                    >
+                      {isSaving ? (
+                        <>Saving...</>
+                      ) : (
+                        <>
+                          <Save className="h-3.5 w-3.5 mr-1" /> Save
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  {appointment.symptoms ? appointment.symptoms : "No symptoms reported yet."}
+                </p>
+              )}
+            </div>
+          </div>
 
           {appointment.notes && (
             <div className="flex items-start gap-3">

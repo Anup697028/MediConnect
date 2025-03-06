@@ -78,6 +78,23 @@ const AppointmentsPage = () => {
     setSelectedAppointment(null);
   };
 
+  const handleUpdateSymptoms = async (appointment: Appointment, symptoms: string) => {
+    // In a real app, we would call the API to update the symptoms
+    // For now, we'll just update the local state
+    const updatedAppointments = appointments.map(app => 
+      app.id === appointment.id 
+        ? { ...app, symptoms } 
+        : app
+    );
+    
+    setAppointments(updatedAppointments);
+    
+    // Update the selected appointment to reflect changes immediately in the dialog
+    if (selectedAppointment && selectedAppointment.id === appointment.id) {
+      setSelectedAppointment({ ...appointment, symptoms });
+    }
+  };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('en-US', {
@@ -138,6 +155,7 @@ const AppointmentsPage = () => {
         appointment={selectedAppointment}
         open={detailsDialogOpen}
         onOpenChange={setDetailsDialogOpen}
+        onUpdateSymptoms={handleUpdateSymptoms}
       />
     </div>
   );

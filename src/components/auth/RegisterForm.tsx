@@ -17,6 +17,7 @@ const RegisterForm = () => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [userType, setUserType] = useState("patient");
+  const [imcId, setImcId] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showOtpInput, setShowOtpInput] = useState(false);
@@ -107,7 +108,8 @@ const RegisterForm = () => {
           userType as 'patient' | 'doctor', 
           otp,
           phone,
-          verifyMethod
+          verifyMethod,
+          userType === 'doctor' ? imcId : undefined
         );
         
         toast.success("Account created successfully");
@@ -209,6 +211,23 @@ const RegisterForm = () => {
                   </button>
                 </div>
               </div>
+
+              {userType === "doctor" && (
+                <div className="space-y-2">
+                  <Label htmlFor="imcId">IMC Registration ID</Label>
+                  <div className="relative">
+                    <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                    <Input
+                      id="imcId"
+                      placeholder="Enter your IMC registration ID"
+                      value={imcId}
+                      onChange={(e) => setImcId(e.target.value)}
+                      className="pl-10"
+                      required={userType === "doctor"}
+                    />
+                  </div>
+                </div>
+              )}
 
               <div className="space-y-2">
                 <Label>Account Type</Label>

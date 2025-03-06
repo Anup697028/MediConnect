@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -41,7 +40,6 @@ const NewAppointmentPage = () => {
   const [availableTimes, setAvailableTimes] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Available specialties
   const specialties = [
     "Cardiology",
     "Dermatology",
@@ -88,13 +86,10 @@ const NewAppointmentPage = () => {
 
     setIsLoading(true);
     
-    // Get the day of the week
     const dayOfWeek = format(selectedDate, 'EEEE');
     
-    // Check if the doctor has availability for this day
     const doctorAvailability = selectedDoctor.availability?.[dayOfWeek] || [];
     
-    // Generate time slots based on doctor's availability
     const times: string[] = [];
     
     doctorAvailability.forEach(slot => {
@@ -103,10 +98,8 @@ const NewAppointmentPage = () => {
       const endHour = parseInt(slot.end.split(':')[0]);
       const endMinute = parseInt(slot.end.split(':')[1]);
       
-      // Generate 30-minute slots
       for (let h = startHour; h <= endHour; h++) {
         for (let m = 0; m < 60; m += 30) {
-          // Skip times before start time or after end time
           if (h === startHour && m < startMinute) continue;
           if (h === endHour && m > endMinute) continue;
           
@@ -130,10 +123,16 @@ const NewAppointmentPage = () => {
     try {
       setIsLoading(true);
       
-      // Format the date string
       const formattedDate = format(selectedDate, 'yyyy-MM-dd');
       
+      const currentUser = api.getCurrentUser();
+      if (!currentUser) {
+        toast.error("You must be logged in to book an appointment");
+        return;
+      }
+      
       await api.bookAppointment({
+        patientId: currentUser.id,
         doctorId: selectedDoctor.id,
         date: formattedDate,
         time: selectedTime,
@@ -317,11 +316,9 @@ const NewAppointmentPage = () => {
                         onSelect={setSelectedDate}
                         initialFocus
                         disabled={(date) => {
-                          // Disable dates in the past
                           const today = new Date();
                           today.setHours(0, 0, 0, 0);
                           
-                          // Disable weekends if the doctor doesn't work on them
                           const dayName = format(date, 'EEEE');
                           const doctorWorks = selectedDoctor?.availability?.[dayName];
                           
@@ -420,7 +417,6 @@ const NewAppointmentPage = () => {
         <h1 className="text-3xl font-bold">Book an Appointment</h1>
       </div>
       
-      {/* Progress indicator */}
       <div className="mb-6">
         <div className="flex items-center justify-between max-w-md mx-auto">
           <div className="flex flex-col items-center">

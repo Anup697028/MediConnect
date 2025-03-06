@@ -64,7 +64,7 @@ const AppointmentsPage = () => {
       // For now, we'll just update the local state
       const updatedAppointments = appointments.map(app => 
         app.id === selectedAppointment.id 
-          ? { ...app, status: "cancelled" } 
+          ? { ...app, status: "cancelled" as const } 
           : app
       );
       

@@ -16,7 +16,7 @@ Follow these steps:
 
 ```sh
 # Step 1: Clone the repository using the project's Git URL.
-git clone https://github.com/EmaniAditya/MediConnect.git
+git clone https://github.com/Anup697028/MediConnect.git
 
 # Step 2: Navigate to the project directory.
 cd MediConnect
@@ -51,4 +51,4 @@ Follow the platform-specific deployment instructions for a React application.
 
 ## Repository Links
 
-- [MediConnect GitHub Repository](https://github.com/EmaniAditya/MediConnect.git)
+- [MediConnect GitHub Repository](https://github.com/Anup697028/MediConnect.git)

@@ -3,13 +3,19 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api, Appointment } from "@/services/api";
-import { Calendar, Clock, Video, User, CheckCircle, XCircle, FileText } from "lucide-react";
+import { Calendar, Clock, Video, User, CheckCircle, XCircle, FileText, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 const AppointmentsPage = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [reminderDialogOpen, setReminderDialogOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,6 +26,7 @@ const AppointmentsPage = () => {
         setAppointments(data);
       } catch (error) {
         console.error("Failed to load appointments:", error);
+        toast.error("Failed to load appointments");
       } finally {
         setIsLoading(false);
       }
@@ -47,6 +54,38 @@ const AppointmentsPage = () => {
       day: 'numeric',
       year: 'numeric'
     }).format(date);
+  };
+
+  const handleCancelAppointment = async () => {
+    if (!selectedAppointment) return;
+    
+    try {
+      // In a real app, we would call the API to cancel the appointment
+      // For now, we'll just update the local state
+      const updatedAppointments = appointments.map(app => 
+        app.id === selectedAppointment.id 
+          ? { ...app, status: "cancelled" } 
+          : app
+      );
+      
+      setAppointments(updatedAppointments);
+      setCancelDialogOpen(false);
+      setSelectedAppointment(null);
+      toast.success("Appointment cancelled successfully");
+    } catch (error) {
+      console.error("Failed to cancel appointment:", error);
+      toast.error("Failed to cancel appointment");
+    }
+  };
+
+  const handleSetReminder = () => {
+    if (!selectedAppointment) return;
+    
+    // In a real app, we would set up a reminder for this appointment
+    // For now, we'll just show a success message
+    toast.success(`Reminder set for your appointment on ${formatDate(selectedAppointment.date)} at ${selectedAppointment.time}`);
+    setReminderDialogOpen(false);
+    setSelectedAppointment(null);
   };
 
   const AppointmentCard = ({ appointment }: { appointment: Appointment }) => (
@@ -103,7 +142,22 @@ const AppointmentsPage = () => {
                 <Button 
                   size="sm" 
                   variant="outline"
+                  className="w-full"
+                  onClick={() => {
+                    setSelectedAppointment(appointment);
+                    setReminderDialogOpen(true);
+                  }}
+                >
+                  <Bell className="h-4 w-4 mr-1" /> Reminder
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant="outline"
                   className="w-full text-destructive border-destructive/20"
+                  onClick={() => {
+                    setSelectedAppointment(appointment);
+                    setCancelDialogOpen(true);
+                  }}
                 >
                   <XCircle className="h-4 w-4 mr-1" /> Cancel
                 </Button>
@@ -221,6 +275,54 @@ const AppointmentsPage = () => {
           )}
         </TabsContent>
       </Tabs>
+
+      {/* Cancel Appointment Dialog */}
+      <AlertDialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cancel Appointment</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to cancel this appointment? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>No, keep appointment</AlertDialogCancel>
+            <AlertDialogAction onClick={handleCancelAppointment} className="bg-destructive text-destructive-foreground">
+              Yes, cancel appointment
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Set Reminder Dialog */}
+      <Dialog open={reminderDialogOpen} onOpenChange={setReminderDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Set Appointment Reminder</DialogTitle>
+            <DialogDescription>
+              Choose when you would like to receive a reminder for your appointment.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="flex items-center gap-2">
+              <input type="checkbox" id="reminder-1day" className="rounded" defaultChecked />
+              <label htmlFor="reminder-1day">1 day before</label>
+            </div>
+            <div className="flex items-center gap-2">
+              <input type="checkbox" id="reminder-1hour" className="rounded" defaultChecked />
+              <label htmlFor="reminder-1hour">1 hour before</label>
+            </div>
+            <div className="flex items-center gap-2">
+              <input type="checkbox" id="reminder-15min" className="rounded" defaultChecked />
+              <label htmlFor="reminder-15min">15 minutes before</label>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setReminderDialogOpen(false)}>Cancel</Button>
+            <Button onClick={handleSetReminder}>Set Reminder</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

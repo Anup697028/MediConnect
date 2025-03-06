@@ -15,6 +15,7 @@ import Dashboard from "./pages/Dashboard";
 import ConsultationsPage from "./pages/ConsultationsPage";
 import ProfilePage from "./pages/ProfilePage";
 import AppointmentsPage from "./pages/AppointmentsPage";
+import NewAppointmentPage from "./pages/NewAppointmentPage";
 import MedicalShopsPage from "./pages/MedicalShopsPage";
 import OrderTrackingPage from "./pages/OrderTrackingPage";
 import SettingsPage from "./pages/SettingsPage";
@@ -39,7 +40,7 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/consultations" element={<ConsultationsPage />} />
             <Route path="/appointments" element={<AppointmentsPage />} />
-            <Route path="/appointments/new" element={<Dashboard />} />
+            <Route path="/appointments/new" element={<NewAppointmentPage />} />
             <Route path="/messages" element={<Dashboard />} />
             <Route path="/records" element={<Dashboard />} />
             <Route path="/prescriptions" element={<Dashboard />} />

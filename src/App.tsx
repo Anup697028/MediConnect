@@ -16,9 +16,13 @@ import ConsultationsPage from "./pages/ConsultationsPage";
 import ProfilePage from "./pages/ProfilePage";
 import AppointmentsPage from "./pages/AppointmentsPage";
 import NewAppointmentPage from "./pages/NewAppointmentPage";
+import MessagesPage from "./pages/MessagesPage";
+import RecordsPage from "./pages/RecordsPage";
+import PrescriptionsPage from "./pages/PrescriptionsPage";
 import MedicalShopsPage from "./pages/MedicalShopsPage";
 import OrderTrackingPage from "./pages/OrderTrackingPage";
 import SettingsPage from "./pages/SettingsPage";
+import PaymentsPage from "./pages/PaymentsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,12 +45,12 @@ const App = () => (
             <Route path="/consultations" element={<ConsultationsPage />} />
             <Route path="/appointments" element={<AppointmentsPage />} />
             <Route path="/appointments/new" element={<NewAppointmentPage />} />
-            <Route path="/messages" element={<Dashboard />} />
-            <Route path="/records" element={<Dashboard />} />
-            <Route path="/prescriptions" element={<Dashboard />} />
+            <Route path="/messages" element={<MessagesPage />} />
+            <Route path="/records" element={<RecordsPage />} />
+            <Route path="/prescriptions" element={<PrescriptionsPage />} />
             <Route path="/medical-shops" element={<MedicalShopsPage />} />
             <Route path="/order-tracking" element={<OrderTrackingPage />} />
-            <Route path="/payments" element={<Dashboard />} />
+            <Route path="/payments" element={<PaymentsPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/settings" element={<SettingsPage />} />
           </Route>

@@ -24,7 +24,7 @@ const RecordsPage = () => {
   const records: MedicalRecord[] = [
     {
       id: "1",
-      title: "वार्षिक स्वास्थ्य जांच (Annual Health Checkup)",
+      title: "Annual Health Checkup",
       type: "checkup",
       date: new Date("2024-02-15"),
       doctor: "Dr. Rajesh Kumar",
@@ -34,7 +34,7 @@ const RecordsPage = () => {
     },
     {
       id: "2",
-      title: "छाती का एक्स-रे (Chest X-Ray Report)",
+      title: "Chest X-Ray Report",
       type: "radiology",
       date: new Date("2024-01-20"),
       doctor: "Dr. Priya Sharma",
@@ -44,7 +44,7 @@ const RecordsPage = () => {
     },
     {
       id: "3",
-      title: "रक्त परीक्षण रिपोर्ट (Blood Test Report)",
+      title: "Blood Test Report",
       type: "lab",
       date: new Date("2024-03-01"),
       doctor: "Dr. Amit Patel",
@@ -92,11 +92,11 @@ const RecordsPage = () => {
   return (
     <div className="container mx-auto py-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">मेडिकल रिकॉर्ड्स (Medical Records)</h1>
+        <h1 className="text-3xl font-bold">Medical Records</h1>
         <div className="relative w-72">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="रिकॉर्ड्स खोजें (Search records...)"
+            placeholder="Search records..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9"
@@ -106,11 +106,11 @@ const RecordsPage = () => {
 
       <Tabs defaultValue="all" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="all">सभी रिकॉर्ड्स (All Records)</TabsTrigger>
-          <TabsTrigger value="checkups">स्वास्थ्य जांच (Checkups)</TabsTrigger>
-          <TabsTrigger value="lab">लैब रिपोर्ट (Lab Reports)</TabsTrigger>
-          <TabsTrigger value="radiology">रेडियोलॉजी (Radiology)</TabsTrigger>
-          <TabsTrigger value="prescriptions">प्रिस्क्रिप्शन (Prescriptions)</TabsTrigger>
+          <TabsTrigger value="all">All Records</TabsTrigger>
+          <TabsTrigger value="checkups">Checkups</TabsTrigger>
+          <TabsTrigger value="lab">Lab Reports</TabsTrigger>
+          <TabsTrigger value="radiology">Radiology</TabsTrigger>
+          <TabsTrigger value="prescriptions">Prescriptions</TabsTrigger>
         </TabsList>
 
         <TabsContent value="all" className="space-y-4">

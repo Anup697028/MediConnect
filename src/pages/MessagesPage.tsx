@@ -26,21 +26,21 @@ const MessagesPage = () => {
     {
       id: "1",
       name: "Dr. Rajesh Kumar",
-      lastMessage: "आपकी दवाई का पर्चा तैयार है (Your prescription is ready)",
+      lastMessage: "Your prescription is ready",
       avatar: "",
       unread: 2,
     },
     {
       id: "2",
       name: "Dr. Priya Sharma",
-      lastMessage: "आज कैसा महसूस कर रहे हैं? (How are you feeling today?)",
+      lastMessage: "How are you feeling today?",
       avatar: "",
       unread: 0,
     },
     {
       id: "3",
       name: "Dr. Amit Patel",
-      lastMessage: "आपकी रिपोर्ट आ गई है (Your reports are available)",
+      lastMessage: "Your reports are available",
       avatar: "",
       unread: 1,
     },
@@ -50,13 +50,13 @@ const MessagesPage = () => {
     {
       id: "1",
       sender: { id: "doctor1", name: "Dr. Rajesh Kumar", avatar: "" },
-      content: "नमस्ते! मैं आपकी क्या मदद कर सकता हूं? (Namaste! How can I help you?)",
+      content: "Namaste! How can I help you?",
       timestamp: new Date("2024-03-06T10:00:00"),
     },
     {
       id: "2",
       sender: { id: "user", name: "You" },
-      content: "मैं अपनी हाल की दवाई के बारे में पूछना चाहता था (I wanted to ask about my recent prescription)",
+      content: "I wanted to ask about my recent prescription",
       timestamp: new Date("2024-03-06T10:01:00"),
     },
   ];
@@ -73,7 +73,7 @@ const MessagesPage = () => {
         {/* Chat List */}
         <Card className="col-span-4 h-full">
           <CardHeader>
-            <CardTitle>संदेश (Messages)</CardTitle>
+            <CardTitle>Messages</CardTitle>
           </CardHeader>
           <CardContent>
             <ScrollArea className="h-[calc(100vh-15rem)]">
@@ -112,7 +112,7 @@ const MessagesPage = () => {
         <Card className="col-span-8 h-full">
           <CardHeader>
             <CardTitle>
-              {selectedChat ? chats.find(c => c.id === selectedChat)?.name : "चैट चुनें (Select a chat)"}
+              {selectedChat ? chats.find(c => c.id === selectedChat)?.name : "Select a chat"}
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col h-[calc(100vh-18rem)]">
@@ -143,7 +143,7 @@ const MessagesPage = () => {
             </ScrollArea>
             <div className="flex gap-2 mt-4">
               <Input
-                placeholder="अपना संदेश लिखें... (Type your message...)"
+                placeholder="Type your message..."
                 value={messageInput}
                 onChange={(e) => setMessageInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}

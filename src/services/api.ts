@@ -1,4 +1,3 @@
-
 // Simulated API service to mimic backend functionality
 import { toast } from "sonner";
 
@@ -9,6 +8,10 @@ export interface User {
   name: string;
   role: 'patient' | 'doctor';
   profileCompleted: boolean;
+  biometricsEnabled?: boolean;
+  phoneNumber?: string;
+  emailVerified?: boolean;
+  phoneVerified?: boolean;
 }
 
 export interface Patient extends User {
@@ -93,6 +96,16 @@ export interface Prescription {
   status: 'active' | 'completed' | 'cancelled';
 }
 
+// OTP data structure
+interface OtpRecord {
+  email?: string;
+  phone?: string;
+  otp: string;
+  expiresAt: Date;
+  attempts: number;
+  lastSent: Date;
+}
+
 // Simulated database
 class Database {
   private storage = localStorage;
@@ -112,6 +125,7 @@ class Database {
     this.storage.setItem(`${this.KEY_PREFIX}consultations`, JSON.stringify([]));
     this.storage.setItem(`${this.KEY_PREFIX}prescriptions`, JSON.stringify([]));
     this.storage.setItem(`${this.KEY_PREFIX}initialized`, 'true');
+    this.storage.setItem(`${this.KEY_PREFIX}otps`, JSON.stringify([]));
 
     // Add some sample doctors
     const sampleDoctors: Doctor[] = [
@@ -182,6 +196,7 @@ class Database {
 class ApiService {
   private db = new Database();
   private currentUser: User | null = null;
+  private otps: Map<string, OtpRecord> = new Map();
 
   constructor() {
     // Load the current user
@@ -229,6 +244,62 @@ class ApiService {
     return user;
   }
   
+  async loginWithOtp(email: string, password: string, otp: string): Promise<User> {
+    // Simulate network delay
+    await this.delay(800);
+    
+    // Verify OTP
+    const isValid = await this.verifyOtp(email, otp);
+    if (!isValid) {
+      throw new Error("Invalid or expired OTP. Please try again.");
+    }
+    
+    // Get all users
+    const users = this.db.getItem<User[]>('users') || [];
+    
+    // Find the user - in a real app we'd check password hashes
+    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    
+    if (!user) {
+      throw new Error("User not found");
+    }
+    
+    // Set the current user
+    this.currentUser = user;
+    localStorage.setItem('user', JSON.stringify(user));
+    
+    // If this is the first time login with OTP, mark email as verified
+    if (!user.emailVerified) {
+      user.emailVerified = true;
+      
+      // Update user in DB
+      const userIndex = users.findIndex(u => u.id === user.id);
+      users[userIndex] = user;
+      this.db.saveItem('users', users);
+    }
+    
+    return user;
+  }
+  
+  async loginWithBiometric(): Promise<User> {
+    // Simulate network delay
+    await this.delay(800);
+    
+    // Simulate biometric authentication
+    const storedUser = localStorage.getItem('biometricUser');
+    if (!storedUser) {
+      throw new Error("No biometric data available. Please login with your credentials first.");
+    }
+    
+    const user = JSON.parse(storedUser);
+    
+    // Set the current user
+    this.currentUser = user;
+    localStorage.setItem('user', JSON.stringify(user));
+    
+    return user;
+  }
+  
   async register(email: string, password: string, name: string, role: 'patient' | 'doctor'): Promise<User> {
     // Simulate network delay
     await this.delay(800);
@@ -267,6 +338,192 @@ class ApiService {
     localStorage.setItem('user', JSON.stringify(newUser));
     
     return newUser;
+  }
+  
+  async registerWithOtp(
+    email: string, 
+    password: string, 
+    name: string, 
+    role: 'patient' | 'doctor', 
+    otp: string,
+    phone?: string,
+    verifyMethod: 'email' | 'phone' = 'email'
+  ): Promise<User> {
+    // Simulate network delay
+    await this.delay(800);
+    
+    // Verify OTP
+    const identifier = verifyMethod === 'email' ? email : phone;
+    if (!identifier) {
+      throw new Error(`${verifyMethod} is required`);
+    }
+    
+    const isValid = await this.verifyOtp(identifier, otp);
+    if (!isValid) {
+      throw new Error("Invalid or expired OTP. Please try again.");
+    }
+    
+    // Get all users
+    const users = this.db.getItem<User[]>('users') || [];
+    
+    // Check if user already exists
+    if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+      throw new Error("User already exists");
+    }
+    
+    // Create new user based on role
+    const newUser: User = {
+      id: `user_${Date.now()}`,
+      email,
+      name,
+      role,
+      profileCompleted: false,
+      phoneNumber: phone,
+      emailVerified: verifyMethod === 'email',
+      phoneVerified: verifyMethod === 'phone'
+    };
+    
+    // Add role-specific fields
+    if (role === 'patient') {
+      (newUser as Patient).paymentMethods = [];
+    } else if (role === 'doctor') {
+      (newUser as Doctor).availability = {};
+      (newUser as Doctor).acceptedInsurance = [];
+    }
+    
+    // Save the new user
+    users.push(newUser);
+    this.db.saveItem('users', users);
+    
+    return newUser;
+  }
+  
+  async sendOtp(identifier: string, method: 'email' | 'phone' = 'email'): Promise<void> {
+    // Simulate network delay
+    await this.delay(800);
+    
+    // Generate a 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    
+    // Set expiry time (10 minutes from now)
+    const expiresAt = new Date();
+    expiresAt.setMinutes(expiresAt.getMinutes() + 10);
+    
+    // Check if we already have an OTP for this identifier
+    const existingOtp = this.otps.get(identifier);
+    if (existingOtp) {
+      // Check if we need to enforce cooldown
+      const now = new Date();
+      const timeSinceLastSent = now.getTime() - existingOtp.lastSent.getTime();
+      if (timeSinceLastSent < 60000) { // 1 minute cooldown
+        throw new Error("Please wait before requesting another OTP");
+      }
+      
+      // Update the existing OTP
+      this.otps.set(identifier, {
+        [method]: identifier,
+        otp,
+        expiresAt,
+        attempts: 0,
+        lastSent: new Date()
+      });
+    } else {
+      // Create a new OTP record
+      this.otps.set(identifier, {
+        [method]: identifier,
+        otp,
+        expiresAt,
+        attempts: 0,
+        lastSent: new Date()
+      });
+    }
+    
+    // In a real app, we would send the OTP via email or SMS
+    console.log(`OTP for ${identifier}: ${otp}`);
+    
+    // For demo purposes, automatically show the OTP
+    toast.info(`Your OTP is: ${otp}`, {
+      duration: 10000,
+      position: 'top-center'
+    });
+  }
+  
+  async verifyOtp(identifier: string, otp: string): Promise<boolean> {
+    // Simulate network delay
+    await this.delay(500);
+    
+    // Check if we have an OTP for this identifier
+    const otpRecord = this.otps.get(identifier);
+    if (!otpRecord) {
+      return false;
+    }
+    
+    // Check if OTP is expired
+    const now = new Date();
+    if (now > otpRecord.expiresAt) {
+      return false;
+    }
+    
+    // Increment attempt counter
+    otpRecord.attempts += 1;
+    
+    // Check if too many attempts
+    if (otpRecord.attempts > 5) {
+      this.otps.delete(identifier);
+      throw new Error("Too many failed attempts. Please request a new OTP.");
+    }
+    
+    // Check if OTP matches
+    if (otpRecord.otp !== otp) {
+      this.otps.set(identifier, otpRecord);
+      return false;
+    }
+    
+    // OTP is valid, remove it from storage to prevent reuse
+    this.otps.delete(identifier);
+    
+    return true;
+  }
+  
+  isBiometricAvailable(): boolean {
+    // In a real app, we would check if the device supports biometric authentication
+    // For this demo, we'll just check if it's a secure context (HTTPS) which is required for WebAuthn
+    const isSecureContext = window.isSecureContext;
+    
+    // For demo purposes, we'll always return true
+    return true;
+  }
+  
+  async updateBiometricPreference(enabled: boolean): Promise<void> {
+    // Simulate network delay
+    await this.delay(500);
+    
+    if (!this.currentUser) {
+      throw new Error("User not logged in");
+    }
+    
+    // Get all users
+    const users = this.db.getItem<User[]>('users') || [];
+    const userIndex = users.findIndex(u => u.id === this.currentUser?.id);
+    
+    if (userIndex === -1) {
+      throw new Error("User not found");
+    }
+    
+    // Update biometric preference
+    users[userIndex].biometricsEnabled = enabled;
+    this.db.saveItem('users', users);
+    
+    // Update current user
+    this.currentUser.biometricsEnabled = enabled;
+    localStorage.setItem('user', JSON.stringify(this.currentUser));
+    
+    // If enabled, store the user for biometric login
+    if (enabled) {
+      localStorage.setItem('biometricUser', JSON.stringify(this.currentUser));
+    } else {
+      localStorage.removeItem('biometricUser');
+    }
   }
   
   logout(): void {

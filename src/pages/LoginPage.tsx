@@ -25,6 +25,12 @@ const LoginPage = () => {
 
       <main className="flex-1 flex items-center justify-center p-6 mt-16">
         <div className="w-full max-w-md">
+          <div className="mb-6 text-center">
+            <h1 className="text-3xl font-bold mb-2">Welcome Back</h1>
+            <p className="text-muted-foreground">
+              Sign in securely with OTP verification
+            </p>
+          </div>
           <LoginForm />
         </div>
       </main>

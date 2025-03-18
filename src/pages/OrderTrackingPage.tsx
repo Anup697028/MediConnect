@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Package, MapPin, CheckCircle, Truck, Store, ShoppingBag, Clock } from "lucide-react";
+import { Package, MapPin, CheckCircle, Truck, Store, ShoppingBag, Clock, IndianRupee } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 
 // Simulated order data
@@ -203,7 +202,10 @@ const OrderTrackingPage = () => {
                   <CardContent className="p-4 pt-0 pb-2">
                     <div className="text-sm">
                       <p>{order.items.length} items</p>
-                      <p className="font-medium">${order.totalAmount.toFixed(2)}</p>
+                      <p className="font-medium flex items-center">
+                        <IndianRupee className="h-3.5 w-3.5 mr-1" />
+                        {order.totalAmount.toFixed(2)}
+                      </p>
                     </div>
                     <div className="mt-2">
                       <Progress value={getProgressPercentage(order)} className="h-1" />
@@ -302,8 +304,8 @@ const OrderTrackingPage = () => {
                     </div>
                     <div>
                       <h4 className="text-sm font-medium">Order Information</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Total: ${selectedOrder.totalAmount.toFixed(2)}
+                      <p className="text-sm text-muted-foreground flex items-center">
+                        Total: <IndianRupee className="h-3.5 w-3.5 mx-1" />{selectedOrder.totalAmount.toFixed(2)}
                       </p>
                       <p className="text-sm text-muted-foreground">
                         Ordered: {formatDate(selectedOrder.orderDate)}

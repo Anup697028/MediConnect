@@ -1,5 +1,6 @@
 // Simulated API service to mimic backend functionality
 import { toast } from "sonner";
+import { format } from 'date-fns';
 
 // Types for our data structures
 export interface User {
@@ -702,11 +703,65 @@ class ApiService {
   async bookAppointment(appointment: Omit<Appointment, 'id' | 'status' | 'paymentStatus'>): Promise<Appointment> {
     await this.delay(1000);
     
-    if (!this.currentUser || this.currentUser.role !== 'patient') {
-      throw new Error('Unauthorized access');
+    if (!this.currentUser) {
+      throw new Error('You must be logged in to book an appointment');
     }
     
+    if (this.currentUser.role !== 'patient') {
+      throw new Error('Only patients can book appointments');
+    }
+    
+    const { doctorId, date, time } = appointment;
+    
+    // Validate inputs
+    if (!doctorId || !date || !time) {
+      throw new Error('Doctor, date, and time are required');
+    }
+    
+    // Check if doctor exists
+    const doctor = await this.getDoctorById(doctorId);
+    if (!doctor) {
+      throw new Error('Doctor not found');
+    }
+    
+    // Check if the doctor is available on that day and time
+    const dayOfWeek = format(new Date(date), 'EEEE');
+    const doctorAvailability = doctor.availability?.[dayOfWeek] || [];
+    
+    if (doctorAvailability.length === 0) {
+      throw new Error('Doctor is not available on this day');
+    }
+    
+    // Check if time is within doctor's availability
+    const isTimeAvailable = doctorAvailability.some(slot => {
+      const slotStartHour = parseInt(slot.start.split(':')[0]);
+      const slotStartMinute = parseInt(slot.start.split(':')[1]);
+      const slotEndHour = parseInt(slot.end.split(':')[0]);
+      const slotEndMinute = parseInt(slot.end.split(':')[1]);
+      
+      const timeHour = parseInt(time.split(':')[0]);
+      const timeMinute = parseInt(time.split(':')[1]);
+      
+      const slotStartMinutes = slotStartHour * 60 + slotStartMinute;
+      const slotEndMinutes = slotEndHour * 60 + slotEndMinute;
+      const timeMinutes = timeHour * 60 + timeMinute;
+      
+      return timeMinutes >= slotStartMinutes && timeMinutes < slotEndMinutes;
+    });
+    
+    if (!isTimeAvailable) {
+      throw new Error('Selected time is not within doctor\'s available hours');
+    }
+    
+    // Check for existing appointments at the same time
     const appointments = this.db.getItem<Appointment[]>('appointments') || [];
+    const conflictingAppointment = appointments.find(
+      app => app.doctorId === doctorId && app.date === date && app.time === time && app.status !== 'cancelled'
+    );
+    
+    if (conflictingAppointment) {
+      throw new Error('This time slot is already booked');
+    }
     
     // Create new appointment
     const newAppointment: Appointment = {
@@ -721,8 +776,7 @@ class ApiService {
     appointments.push(newAppointment);
     this.db.saveItem('appointments', appointments);
     
-    // Notify of successful booking
-    toast.success("Appointment booked successfully");
+    console.log('Appointment booked successfully:', newAppointment);
     
     return newAppointment;
   }

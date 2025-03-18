@@ -90,6 +90,8 @@ const NewAppointmentPage = () => {
     
     const doctorAvailability = selectedDoctor.availability?.[dayOfWeek] || [];
     
+    console.log("Doctor availability for", dayOfWeek, ":", doctorAvailability);
+    
     const times: string[] = [];
     
     doctorAvailability.forEach(slot => {
@@ -98,17 +100,22 @@ const NewAppointmentPage = () => {
       const endHour = parseInt(slot.end.split(':')[0]);
       const endMinute = parseInt(slot.end.split(':')[1]);
       
-      for (let h = startHour; h <= endHour; h++) {
-        for (let m = 0; m < 60; m += 30) {
-          if (h === startHour && m < startMinute) continue;
-          if (h === endHour && m > endMinute) continue;
-          
-          const formattedHour = h.toString().padStart(2, '0');
-          const formattedMinute = m.toString().padStart(2, '0');
-          times.push(`${formattedHour}:${formattedMinute}`);
-        }
+      // Convert slot start and end to minutes for easier calculation
+      const slotStartMinutes = startHour * 60 + startMinute;
+      const slotEndMinutes = endHour * 60 + endMinute;
+      
+      // Generate time slots in 30-minute increments
+      for (let timeInMinutes = slotStartMinutes; timeInMinutes < slotEndMinutes; timeInMinutes += 30) {
+        const hour = Math.floor(timeInMinutes / 60);
+        const minute = timeInMinutes % 60;
+        
+        const formattedHour = hour.toString().padStart(2, '0');
+        const formattedMinute = minute.toString().padStart(2, '0');
+        times.push(`${formattedHour}:${formattedMinute}`);
       }
     });
+    
+    console.log("Generated time slots:", times);
     
     setAvailableTimes(times);
     setIsLoading(false);
@@ -128,8 +135,21 @@ const NewAppointmentPage = () => {
       const currentUser = api.getCurrentUser();
       if (!currentUser) {
         toast.error("You must be logged in to book an appointment");
+        navigate("/login");
         return;
       }
+      
+      if (currentUser.role !== 'patient') {
+        toast.error("Only patients can book appointments");
+        return;
+      }
+      
+      console.log("Booking appointment with:", {
+        doctor: selectedDoctor.name,
+        date: formattedDate,
+        time: selectedTime,
+        symptoms: symptoms
+      });
       
       await api.bookAppointment({
         patientId: currentUser.id,
@@ -143,7 +163,7 @@ const NewAppointmentPage = () => {
       navigate("/appointments");
     } catch (error) {
       console.error("Failed to book appointment:", error);
-      toast.error("Failed to book appointment");
+      toast.error(`Failed to book appointment: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsLoading(false);
     }
@@ -320,7 +340,13 @@ const NewAppointmentPage = () => {
                           today.setHours(0, 0, 0, 0);
                           
                           const dayName = format(date, 'EEEE');
-                          const doctorWorks = selectedDoctor?.availability?.[dayName];
+                          const doctorWorks = selectedDoctor?.availability?.[dayName] && 
+                                            selectedDoctor?.availability?.[dayName].length > 0;
+                          
+                          // Log for debugging
+                          if (date >= today && date < new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000)) {
+                            console.log(`Date ${format(date, 'yyyy-MM-dd')} (${dayName}): Doctor works? ${doctorWorks ? 'Yes' : 'No'}`);
+                          }
                           
                           return date < today || !doctorWorks;
                         }}

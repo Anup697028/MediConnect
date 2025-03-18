@@ -233,7 +233,7 @@ const NewAppointmentPage = () => {
                           )}
                           <div className="flex items-center mt-2">
                             <div className="text-sm bg-primary/10 text-primary py-0.5 px-2 rounded-full">
-                              ${doctor.consultationFee}/consultation
+                              ₹{doctor.consultationFee}/consultation
                             </div>
                             {doctor.rating && (
                               <div className="ml-2 flex items-center text-amber-500 text-sm">

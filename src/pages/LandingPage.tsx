@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -55,7 +54,7 @@ const LandingPage = () => {
             <div className="size-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
               MC
             </div>
-            <span className="font-semibold text-xl">MediConnect</span>
+            <span className="font-semibold text-xl">MediConnect India</span>
           </div>
           <nav className="hidden md:flex items-center gap-6">
             <a href="#features" className="text-sm hover:text-primary transition-colors">Features</a>
@@ -68,7 +67,7 @@ const LandingPage = () => {
             <Button onClick={() => navigate("/register")}>Get Started</Button>
           </nav>
           <div className="md:hidden">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/login")}>
+            <Button variant="ghost" size="icon">
               <span className="sr-only">Menu</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -144,6 +143,152 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* How it Works Section */}
+      <section id="about" className="py-20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16 animate-fade-in">
+            <h2 className="text-3xl font-bold mb-4">How MediConnect Works</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Get started with MediConnect in three simple steps
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card className="glass">
+              <CardContent className="p-6 text-center">
+                <div className="mb-4 mx-auto size-12 bg-primary/10 rounded-full flex items-center justify-center">
+                  <span className="text-2xl font-bold text-primary">1</span>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Create Your Account</h3>
+                <p className="text-muted-foreground">
+                  Sign up in minutes with your basic information and medical history.
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="glass">
+              <CardContent className="p-6 text-center">
+                <div className="mb-4 mx-auto size-12 bg-primary/10 rounded-full flex items-center justify-center">
+                  <span className="text-2xl font-bold text-primary">2</span>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Find Your Provider</h3>
+                <p className="text-muted-foreground">
+                  Browse through our network of qualified healthcare providers and choose the right one.
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="glass">
+              <CardContent className="p-6 text-center">
+                <div className="mb-4 mx-auto size-12 bg-primary/10 rounded-full flex items-center justify-center">
+                  <span className="text-2xl font-bold text-primary">3</span>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Start Consultation</h3>
+                <p className="text-muted-foreground">
+                  Schedule appointments and connect with your provider through secure video calls.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section id="testimonials" className="py-20 bg-secondary/50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16 animate-fade-in">
+            <h2 className="text-3xl font-bold mb-4">What Our Users Say</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Hear from patients and providers who use MediConnect
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card className="glass">
+              <CardContent className="p-6">
+                <p className="mb-4 text-muted-foreground">
+                  "MediConnect has transformed how I manage my healthcare. The virtual consultations are seamless, and I love having all my records in one place."
+                </p>
+                <div className="flex items-center">
+                  <div className="ml-3">
+                    <p className="font-semibold">Priya M.</p>
+                    <p className="text-sm text-muted-foreground">Patient</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="glass">
+              <CardContent className="p-6">
+                <p className="mb-4 text-muted-foreground">
+                  "As a healthcare provider, MediConnect helps me deliver better care to my patients. The platform is intuitive and secure."
+                </p>
+                <div className="flex items-center">
+                  <div className="ml-3">
+                    <p className="font-semibold">Dr. Rajesh K.</p>
+                    <p className="text-sm text-muted-foreground">Healthcare Provider</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="glass">
+              <CardContent className="p-6">
+                <p className="mb-4 text-muted-foreground">
+                  "The prescription management feature is a game-changer. No more waiting in line at the pharmacy!"
+                </p>
+                <div className="flex items-center">
+                  <div className="ml-3">
+                    <p className="font-semibold">Anand S.</p>
+                    <p className="text-sm text-muted-foreground">Patient</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" className="py-20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16 animate-fade-in">
+            <h2 className="text-3xl font-bold mb-4">Frequently Asked Questions</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Find answers to common questions about MediConnect
+            </p>
+          </div>
+          <div className="max-w-3xl mx-auto space-y-4">
+            <Card className="glass">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-semibold mb-2">How secure is MediConnect?</h3>
+                <p className="text-muted-foreground">
+                  MediConnect is fully HIPAA compliant and uses industry-standard encryption to protect your data. All communications are encrypted end-to-end.
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="glass">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-semibold mb-2">What types of healthcare providers are available?</h3>
+                <p className="text-muted-foreground">
+                  We have a diverse network of licensed healthcare providers including primary care physicians, specialists, mental health professionals, and more.
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="glass">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-semibold mb-2">How do virtual consultations work?</h3>
+                <p className="text-muted-foreground">
+                  Virtual consultations are conducted through our secure video platform. You'll receive a link before your appointment, and can join with just one click.
+                </p>
+              </CardContent>
+            </Card>
+            <Card className="glass">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-semibold mb-2">Is insurance accepted?</h3>
+                <p className="text-muted-foreground">
+                  Yes, we work with many major insurance providers. You can verify your coverage during registration or by contacting our support team.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-20 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
@@ -170,43 +315,26 @@ const LandingPage = () => {
                 <div className="size-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
                   MC
                 </div>
-                <span className="font-semibold text-xl">MediConnect</span>
+                <span className="font-semibold text-xl">MediConnect India</span>
               </div>
               <p className="text-muted-foreground max-w-xs">
-                Transforming healthcare with accessible telehealth solutions for everyone.
+                Transforming healthcare with accessible telehealth solutions for everyone across India.
               </p>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-2 gap-8">
               <div>
                 <h3 className="font-semibold mb-4">Platform</h3>
                 <ul className="space-y-2">
-                  <li><a href="#" className="text-muted-foreground hover:text-primary">Features</a></li>
-                  <li><a href="#" className="text-muted-foreground hover:text-primary">Security</a></li>
-                  <li><a href="#" className="text-muted-foreground hover:text-primary">For Patients</a></li>
-                  <li><a href="#" className="text-muted-foreground hover:text-primary">For Providers</a></li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-4">Company</h3>
-                <ul className="space-y-2">
-                  <li><a href="#" className="text-muted-foreground hover:text-primary">About Us</a></li>
-                  <li><a href="#" className="text-muted-foreground hover:text-primary">Blog</a></li>
-                  <li><a href="#" className="text-muted-foreground hover:text-primary">Careers</a></li>
-                  <li><a href="#" className="text-muted-foreground hover:text-primary">Contact</a></li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-semibold mb-4">Legal</h3>
-                <ul className="space-y-2">
-                  <li><a href="#" className="text-muted-foreground hover:text-primary">Privacy Policy</a></li>
-                  <li><a href="#" className="text-muted-foreground hover:text-primary">Terms of Service</a></li>
-                  <li><a href="#" className="text-muted-foreground hover:text-primary">HIPAA Compliance</a></li>
+                  <li><a href="#features" className="text-muted-foreground hover:text-primary">Features</a></li>
+                  <li><a href="#about" className="text-muted-foreground hover:text-primary">How it Works</a></li>
+                  <li><a href="#testimonials" className="text-muted-foreground hover:text-primary">Testimonials</a></li>
+                  <li><a href="#faq" className="text-muted-foreground hover:text-primary">FAQ</a></li>
                 </ul>
               </div>
             </div>
           </div>
           <div className="pt-8 border-t text-center text-muted-foreground">
-            <p>&copy; {new Date().getFullYear()} MediConnect. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} MediConnect India. All rights reserved.</p>
           </div>
         </div>
       </footer>

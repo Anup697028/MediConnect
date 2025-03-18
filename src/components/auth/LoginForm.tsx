@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -249,8 +248,8 @@ const LoginForm = () => {
           </div>
         )}
       </CardContent>
-      <CardFooter className="flex flex-col space-y-4">
-        <div className="text-sm text-center text-muted-foreground">
+      <CardFooter>
+        <div className="text-sm text-center text-muted-foreground w-full">
           Don't have an account?{" "}
           <a
             href="/register"
@@ -260,7 +259,7 @@ const LoginForm = () => {
               navigate("/register");
             }}
           >
-            Sign up
+            Create one
           </a>
         </div>
       </CardFooter>

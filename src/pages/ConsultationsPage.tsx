@@ -20,30 +20,30 @@ const ConsultationsPage = () => {
   const mockConsultations = [
     {
       id: 1,
-      doctor: "Dr. Sarah Johnson",
+      doctor: "Dr. Rahul Sharma",
       specialty: "Cardiologist",
       date: "Today",
       time: "2:30 PM",
       status: "upcoming",
-      avatar: "S"
+      avatar: "R"
     },
     {
       id: 2,
-      doctor: "Dr. Michael Chen",
+      doctor: "Dr. Priya Patel",
       specialty: "Dermatologist",
       date: "May 15, 2023",
       time: "10:00 AM",
       status: "completed",
-      avatar: "M"
+      avatar: "P"
     },
     {
       id: 3,
-      doctor: "Dr. Emily Rodriguez",
+      doctor: "Dr. Amit Kumar",
       specialty: "Neurologist",
       date: "April 28, 2023",
       time: "3:15 PM",
       status: "completed",
-      avatar: "E"
+      avatar: "A"
     }
   ];
   
@@ -51,7 +51,7 @@ const ConsultationsPage = () => {
     setIsInCall(true);
     toast({
       title: "Video call started",
-      description: "You've joined the consultation with Dr. Sarah Johnson.",
+      description: "You've joined the consultation with Dr. Rahul Sharma.",
     });
   };
   
@@ -107,9 +107,9 @@ const ConsultationsPage = () => {
                   ) : (
                     <div className="flex flex-col items-center justify-center">
                       <Avatar className="h-32 w-32 mb-4">
-                        <AvatarFallback className="text-4xl">S</AvatarFallback>
+                        <AvatarFallback className="text-4xl">R</AvatarFallback>
                       </Avatar>
-                      <h3 className="text-white text-2xl">Dr. Sarah Johnson</h3>
+                      <h3 className="text-white text-2xl">Dr. Rahul Sharma</h3>
                     </div>
                   )}
                 </div>
@@ -178,7 +178,7 @@ const ConsultationsPage = () => {
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h2 className="text-2xl font-bold">Consultation with Dr. Sarah Johnson</h2>
+                  <h2 className="text-2xl font-bold">Consultation with Dr. Rahul Sharma</h2>
                   <p className="text-muted-foreground">Cardiologist • Today, 2:30 PM</p>
                 </div>
                 <Badge variant="outline" className="px-3 py-1 text-sm bg-green-500/10 text-green-600 border-green-200">
@@ -192,7 +192,7 @@ const ConsultationsPage = () => {
                     <CardTitle className="text-sm">Consultation Notes</CardTitle>
                   </CardHeader>
                   <CardContent className="p-4 pt-0">
-                    <p className="text-muted-foreground text-sm">Dr. Johnson is reviewing your latest test results. You can discuss your symptoms during the call.</p>
+                    <p className="text-muted-foreground text-sm">Dr. Sharma is reviewing your latest test results. You can discuss your symptoms during the call.</p>
                   </CardContent>
                 </Card>
                 

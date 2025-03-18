@@ -1,9 +1,8 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Calendar, Clock, FileText, AlertCircle, Clipboard, User, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Appointment } from "@/services/api";
+import { Appointment, api, Doctor } from "@/services/api";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
@@ -24,11 +23,28 @@ export const AppointmentDetailsDialog = ({
   const [editingSymptoms, setEditingSymptoms] = useState(false);
   const [symptoms, setSymptoms] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [doctor, setDoctor] = useState<Doctor | null>(null);
+  const [isLoadingDoctor, setIsLoadingDoctor] = useState(true);
 
   // Initialize symptoms when appointment changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (appointment) {
       setSymptoms(appointment.symptoms || "");
+      
+      // Fetch doctor information
+      const fetchDoctor = async () => {
+        try {
+          setIsLoadingDoctor(true);
+          const doctorData = await api.getDoctorById(appointment.doctorId);
+          setDoctor(doctorData);
+        } catch (error) {
+          console.error("Failed to fetch doctor:", error);
+        } finally {
+          setIsLoadingDoctor(false);
+        }
+      };
+      
+      fetchDoctor();
     }
   }, [appointment]);
 
@@ -66,7 +82,7 @@ export const AppointmentDetailsDialog = ({
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">Appointment Details</DialogTitle>
           <DialogDescription>
-            View information about your appointment with Dr. Smith
+            View information about your appointment with {doctor?.name || "your doctor"}
           </DialogDescription>
         </DialogHeader>
 
@@ -89,8 +105,12 @@ export const AppointmentDetailsDialog = ({
             </div>
             <div>
               <h3 className="font-medium">Doctor</h3>
-              <p className="text-sm text-muted-foreground">Dr. Smith</p>
-              <p className="text-xs text-muted-foreground">Specialization: General Medicine</p>
+              <p className="text-sm text-muted-foreground">
+                {isLoadingDoctor ? "Loading doctor information..." : doctor?.name || "Information unavailable"}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Specialization: {doctor?.specialty || "General Medicine"}
+              </p>
             </div>
           </div>
 

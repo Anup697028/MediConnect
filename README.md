@@ -4,6 +4,16 @@
 
 MediConnect is a modern healthcare platform designed to connect patients with healthcare providers efficiently and securely. The platform facilitates seamless communication, appointment scheduling, and medical record management.
 
+## Features
+
+- **Patient-Provider Connection**: Connect patients with healthcare professionals
+- **Appointment Scheduling**: Book and manage medical appointments
+- **Medical Record Management**: Securely store and access medical history
+- **Prescription Management**: Digital prescriptions and medication tracking
+- **Medical Shop Integration**: Find and order medications from nearby pharmacies
+- **Payment Processing**: Secure payment options for consultations and prescriptions
+- **Secure Authentication**: OTP verification and user authentication
+
 ## Getting Started
 
 **Local Development**
@@ -52,3 +62,7 @@ Follow the platform-specific deployment instructions for a React application.
 ## Repository Links
 
 - [MediConnect GitHub Repository](https://github.com/Anup697028/MediConnect.git)
+
+---
+
+Last updated: March 19, 2025

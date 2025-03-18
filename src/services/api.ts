@@ -34,6 +34,7 @@ export interface Doctor extends User {
   role: 'doctor';
   specialty?: string;
   license?: string;
+  imcRegistrationNumber?: string;
   education?: string[];
   experience?: number; // Years of experience
   availability?: {
@@ -127,17 +128,18 @@ class Database {
     this.storage.setItem(`${this.KEY_PREFIX}initialized`, 'true');
     this.storage.setItem(`${this.KEY_PREFIX}otps`, JSON.stringify([]));
 
-    // Add some sample doctors
-    const sampleDoctors: Doctor[] = [
+    // Add some sample users
+    const sampleUsers: (Doctor | Patient)[] = [
       {
         id: 'doc1',
-        email: 'dr.smith@example.com',
-        name: 'Dr. John Smith',
+        email: 'dr.sharma@example.com',
+        name: 'Dr. Vikram Sharma',
         role: 'doctor',
         profileCompleted: true,
         specialty: 'Cardiology',
         license: 'MED12345',
-        education: ['Harvard Medical School', 'Johns Hopkins Residency'],
+        imcRegistrationNumber: 'IMC78901234',
+        education: ['AIIMS Delhi', 'Post Graduate Institute of Medical Education and Research'],
         experience: 15,
         availability: {
           'Monday': [{ start: '09:00', end: '12:00' }, { start: '13:00', end: '17:00' }],
@@ -145,19 +147,20 @@ class Database {
           'Friday': [{ start: '09:00', end: '12:00' }, { start: '13:00', end: '15:00' }],
         },
         rating: 4.8,
-        consultationFee: 150,
+        consultationFee: 1500,
         bio: 'Experienced cardiologist specializing in preventive care and heart disease management.',
-        acceptedInsurance: ['Blue Cross', 'Aetna', 'UnitedHealthcare']
+        acceptedInsurance: ['Star Health', 'Aditya Birla Health Insurance', 'HDFC ERGO Health']
       },
       {
         id: 'doc2',
-        email: 'dr.wong@example.com',
-        name: 'Dr. Emily Wong',
+        email: 'dr.patel@example.com',
+        name: 'Dr. Ananya Patel',
         role: 'doctor',
         profileCompleted: true,
         specialty: 'Pediatrics',
         license: 'MED54321',
-        education: ['Stanford Medical School', 'UCLA Residency'],
+        imcRegistrationNumber: 'IMC56789012',
+        education: ['KEM Hospital Mumbai', 'Christian Medical College Vellore'],
         experience: 10,
         availability: {
           'Tuesday': [{ start: '08:00', end: '12:00' }, { start: '13:00', end: '16:00' }],
@@ -165,13 +168,42 @@ class Database {
           'Saturday': [{ start: '10:00', end: '14:00' }],
         },
         rating: 4.9,
-        consultationFee: 120,
+        consultationFee: 1200,
         bio: 'Compassionate pediatrician dedicated to child wellness and developmental health.',
-        acceptedInsurance: ['Blue Cross', 'Cigna', 'Kaiser']
+        acceptedInsurance: ['Star Health', 'Bajaj Allianz', 'National Insurance']
+      },
+      {
+        id: 'patient1',
+        email: 'rahul.verma@example.com',
+        name: 'Rahul Verma',
+        role: 'patient',
+        profileCompleted: true,
+        emailVerified: true,
+        dateOfBirth: '1990-05-15',
+        medicalHistory: ['Asthma', 'Seasonal Allergies'],
+        allergies: ['Penicillin'],
+        medications: ['Albuterol inhaler'],
+        insuranceProvider: 'Star Health',
+        insuranceId: 'SH123456789',
+        paymentMethods: []
+      },
+      {
+        id: 'patient2',
+        email: 'priya.gupta@example.com',
+        name: 'Priya Gupta',
+        role: 'patient',
+        profileCompleted: true,
+        emailVerified: true,
+        dateOfBirth: '1985-08-22',
+        medicalHistory: ['Hypertension'],
+        medications: ['Lisinopril'],
+        insuranceProvider: 'Aditya Birla Health Insurance',
+        insuranceId: 'AB987654321',
+        paymentMethods: []
       }
     ];
     
-    this.saveItem('doctors', sampleDoctors);
+    this.saveItem('users', sampleUsers);
   }
 
   getItem<T>(key: string): T | null {
@@ -218,23 +250,7 @@ class ApiService {
     const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
     
     if (!user) {
-      // For demo purposes, automatically create the user if they don't exist
-      const newUser: Patient = {
-        id: `user_${Date.now()}`,
-        email,
-        name: email.split('@')[0],
-        role: 'patient',
-        profileCompleted: false,
-        paymentMethods: []
-      };
-      
-      users.push(newUser);
-      this.db.saveItem('users', users);
-      
-      this.currentUser = newUser;
-      localStorage.setItem('user', JSON.stringify(newUser));
-      
-      return newUser;
+      throw new Error("User not found. Please register an account first.");
     }
     
     // Set the current user
@@ -261,7 +277,7 @@ class ApiService {
     const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
     
     if (!user) {
-      throw new Error("User not found");
+      throw new Error("User not found. Please register an account first.");
     }
     
     // Set the current user
@@ -347,7 +363,8 @@ class ApiService {
     role: 'patient' | 'doctor', 
     otp: string,
     phone?: string,
-    verifyMethod: 'email' | 'phone' = 'email'
+    verifyMethod: 'email' | 'phone' = 'email',
+    imcRegistrationNumber?: string
   ): Promise<User> {
     // Simulate network delay
     await this.delay(800);
@@ -356,6 +373,11 @@ class ApiService {
     const identifier = verifyMethod === 'email' ? email : phone;
     if (!identifier) {
       throw new Error(`${verifyMethod} is required`);
+    }
+    
+    // Require IMC registration number for doctors
+    if (role === 'doctor' && !imcRegistrationNumber) {
+      throw new Error("IMC Registration Number is required for healthcare providers");
     }
     
     const isValid = await this.verifyOtp(identifier, otp);
@@ -389,6 +411,7 @@ class ApiService {
     } else if (role === 'doctor') {
       (newUser as Doctor).availability = {};
       (newUser as Doctor).acceptedInsurance = [];
+      (newUser as Doctor).imcRegistrationNumber = imcRegistrationNumber;
     }
     
     // Save the new user
@@ -780,8 +803,27 @@ class ApiService {
   }
   
   // Helper methods
-  private delay(ms: number): Promise<void> {
+  private async delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  // For development/testing only - resets all data
+  async resetAllData(): Promise<void> {
+    // Clear all localStorage data
+    localStorage.clear();
+    
+    // Re-initialize database
+    this.db = new Database();
+    
+    // Reset current user
+    this.currentUser = null;
+    
+    // Clear all OTPs
+    this.otps.clear();
+    
+    toast.success("All data has been reset", {
+      description: "The application has been reset to its initial state."
+    });
   }
 }
 

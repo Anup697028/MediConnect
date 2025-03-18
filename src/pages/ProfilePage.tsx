@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -320,7 +319,7 @@ const ProfilePage = () => {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="consultationFee">Consultation Fee ($)</Label>
+                    <Label htmlFor="consultationFee">Consultation Fee (₹)</Label>
                     <Input 
                       id="consultationFee" 
                       type="number"

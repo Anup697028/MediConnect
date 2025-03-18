@@ -1,8 +1,7 @@
-
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Calendar, Clock, Video, Bell, XCircle, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Appointment } from "@/services/api";
+import { Appointment, api, Doctor } from "@/services/api";
 import { useNavigate } from "react-router-dom";
 
 interface AppointmentCardProps {
@@ -19,6 +18,24 @@ export const AppointmentCard = ({
   onViewDetails,
 }: AppointmentCardProps) => {
   const navigate = useNavigate();
+  const [doctor, setDoctor] = useState<Doctor | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDoctor = async () => {
+      try {
+        setIsLoading(true);
+        const doctorData = await api.getDoctorById(appointment.doctorId);
+        setDoctor(doctorData);
+      } catch (error) {
+        console.error("Failed to fetch doctor:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDoctor();
+  }, [appointment.doctorId]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -42,7 +59,10 @@ export const AppointmentCard = ({
               <Calendar className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h3 className="font-medium">Appointment with Dr. Smith</h3>
+              <h3 className="font-medium">Appointment with {doctor?.name || "Loading doctor..."}</h3>
+              <div className="text-sm text-muted-foreground mt-1">
+                <span className="text-primary-600">{doctor?.specialty || ""}</span>
+              </div>
               <div className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
                 <Calendar className="h-3 w-3" />
                 <span>{formatDate(appointment.date)}</span>

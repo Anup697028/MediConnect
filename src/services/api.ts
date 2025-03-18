@@ -112,12 +112,32 @@ interface OtpRecord {
 class Database {
   private storage = localStorage;
   private KEY_PREFIX = 'mediconnect_';
+  private VERSION = '1.1'; // Add a version to track database schema changes
 
   constructor() {
-    // Initialize DB if needed
-    if (!this.storage.getItem(`${this.KEY_PREFIX}initialized`)) {
-      this.initializeDatabase();
+    // Initialize DB if needed or if version has changed
+    const currentVersion = this.storage.getItem(`${this.KEY_PREFIX}version`);
+    if (!this.storage.getItem(`${this.KEY_PREFIX}initialized`) || currentVersion !== this.VERSION) {
+      this.resetDatabase();
     }
+  }
+
+  // Force reset the database
+  resetDatabase() {
+    console.log('Resetting database to version', this.VERSION);
+    // Clear all existing data
+    this.clearAll();
+    // Initialize with new data
+    this.initializeDatabase();
+  }
+
+  // Clear all data with the prefix
+  clearAll() {
+    Object.keys(this.storage).forEach(key => {
+      if (key.startsWith(this.KEY_PREFIX)) {
+        this.storage.removeItem(key);
+      }
+    });
   }
 
   private initializeDatabase() {
@@ -128,9 +148,11 @@ class Database {
     this.storage.setItem(`${this.KEY_PREFIX}prescriptions`, JSON.stringify([]));
     this.storage.setItem(`${this.KEY_PREFIX}initialized`, 'true');
     this.storage.setItem(`${this.KEY_PREFIX}otps`, JSON.stringify([]));
+    this.storage.setItem(`${this.KEY_PREFIX}version`, this.VERSION);
 
     // Add some sample users
     const sampleUsers: (Doctor | Patient)[] = [
+      // Cardiology
       {
         id: 'doc1',
         email: 'dr.sharma@example.com',
@@ -152,6 +174,7 @@ class Database {
         bio: 'Experienced cardiologist specializing in preventive care and heart disease management.',
         acceptedInsurance: ['Star Health', 'Aditya Birla Health Insurance', 'HDFC ERGO Health']
       },
+      // Pediatrics
       {
         id: 'doc2',
         email: 'dr.patel@example.com',
@@ -173,6 +196,249 @@ class Database {
         bio: 'Compassionate pediatrician dedicated to child wellness and developmental health.',
         acceptedInsurance: ['Star Health', 'Bajaj Allianz', 'National Insurance']
       },
+      // Dermatology
+      {
+        id: 'doc3',
+        email: 'dr.mehra@example.com',
+        name: 'Dr. Anil Mehra',
+        role: 'doctor',
+        profileCompleted: true,
+        specialty: 'Dermatology',
+        license: 'MED23456',
+        imcRegistrationNumber: 'IMC67890123',
+        education: ['Maulana Azad Medical College', 'Lady Hardinge Medical College'],
+        experience: 12,
+        availability: {
+          'Monday': [{ start: '10:00', end: '14:00' }, { start: '15:00', end: '18:00' }],
+          'Wednesday': [{ start: '10:00', end: '14:00' }, { start: '15:00', end: '18:00' }],
+          'Friday': [{ start: '10:00', end: '14:00' }],
+        },
+        rating: 4.7,
+        consultationFee: 1300,
+        bio: 'Dermatologist specializing in skin disorders, cosmetic procedures, and dermatological surgery.',
+        acceptedInsurance: ['Star Health', 'Max Bupa', 'Religare Health']
+      },
+      // Endocrinology
+      {
+        id: 'doc4',
+        email: 'dr.gupta@example.com',
+        name: 'Dr. Neha Gupta',
+        role: 'doctor',
+        profileCompleted: true,
+        specialty: 'Endocrinology',
+        license: 'MED34567',
+        imcRegistrationNumber: 'IMC45678901',
+        education: ['AIIMS Delhi', 'King George\'s Medical University'],
+        experience: 9,
+        availability: {
+          'Tuesday': [{ start: '09:00', end: '13:00' }, { start: '14:00', end: '17:00' }],
+          'Thursday': [{ start: '09:00', end: '13:00' }, { start: '14:00', end: '17:00' }],
+          'Saturday': [{ start: '09:00', end: '13:00' }],
+        },
+        rating: 4.6,
+        consultationFee: 1600,
+        bio: 'Endocrinologist focusing on diabetes, thyroid disorders, and hormonal imbalances.',
+        acceptedInsurance: ['Aditya Birla Health Insurance', 'HDFC ERGO Health', 'Religare Health']
+      },
+      // Gastroenterology
+      {
+        id: 'doc5',
+        email: 'dr.singh@example.com',
+        name: 'Dr. Manpreet Singh',
+        role: 'doctor',
+        profileCompleted: true,
+        specialty: 'Gastroenterology',
+        license: 'MED45678',
+        imcRegistrationNumber: 'IMC34567890',
+        education: ['PGI Chandigarh', 'AIIMS Jodhpur'],
+        experience: 14,
+        availability: {
+          'Monday': [{ start: '08:30', end: '12:30' }, { start: '14:30', end: '18:30' }],
+          'Wednesday': [{ start: '08:30', end: '12:30' }, { start: '14:30', end: '18:30' }],
+          'Friday': [{ start: '08:30', end: '12:30' }],
+        },
+        rating: 4.8,
+        consultationFee: 1800,
+        bio: 'Gastroenterologist specializing in digestive disorders and liver diseases.',
+        acceptedInsurance: ['Star Health', 'Bajaj Allianz', 'Max Bupa']
+      },
+      // General Medicine
+      {
+        id: 'doc6',
+        email: 'dr.joshi@example.com',
+        name: 'Dr. Rahul Joshi',
+        role: 'doctor',
+        profileCompleted: true,
+        specialty: 'General Medicine',
+        license: 'MED56789',
+        imcRegistrationNumber: 'IMC23456789',
+        education: ['Seth GS Medical College', 'Grant Medical College'],
+        experience: 8,
+        availability: {
+          'Monday': [{ start: '09:30', end: '13:30' }, { start: '15:30', end: '18:30' }],
+          'Thursday': [{ start: '09:30', end: '13:30' }, { start: '15:30', end: '18:30' }],
+          'Saturday': [{ start: '09:30', end: '13:30' }],
+        },
+        rating: 4.7,
+        consultationFee: 1000,
+        bio: 'General physician focusing on preventive care and management of chronic diseases.',
+        acceptedInsurance: ['Star Health', 'Aditya Birla Health Insurance', 'National Insurance']
+      },
+      // Neurology
+      {
+        id: 'doc7',
+        email: 'dr.khanna@example.com',
+        name: 'Dr. Sanjay Khanna',
+        role: 'doctor',
+        profileCompleted: true,
+        specialty: 'Neurology',
+        license: 'MED67890',
+        imcRegistrationNumber: 'IMC12345678',
+        education: ['AIIMS Delhi', 'NIMHANS Bangalore'],
+        experience: 16,
+        availability: {
+          'Tuesday': [{ start: '10:00', end: '14:00' }, { start: '15:00', end: '18:00' }],
+          'Thursday': [{ start: '10:00', end: '14:00' }, { start: '15:00', end: '18:00' }],
+          'Saturday': [{ start: '10:00', end: '14:00' }],
+        },
+        rating: 4.9,
+        consultationFee: 2000,
+        bio: 'Neurologist specializing in stroke management, epilepsy, and neurological disorders.',
+        acceptedInsurance: ['Star Health', 'Max Bupa', 'HDFC ERGO Health']
+      },
+      // Obstetrics & Gynecology
+      {
+        id: 'doc8',
+        email: 'dr.reddy@example.com',
+        name: 'Dr. Kavita Reddy',
+        role: 'doctor',
+        profileCompleted: true,
+        specialty: 'Obstetrics & Gynecology',
+        license: 'MED78901',
+        imcRegistrationNumber: 'IMC01234567',
+        education: ['Osmania Medical College', 'Madras Medical College'],
+        experience: 12,
+        availability: {
+          'Monday': [{ start: '09:00', end: '13:00' }, { start: '14:00', end: '17:00' }],
+          'Wednesday': [{ start: '09:00', end: '13:00' }, { start: '14:00', end: '17:00' }],
+          'Friday': [{ start: '09:00', end: '13:00' }],
+        },
+        rating: 4.8,
+        consultationFee: 1400,
+        bio: 'Obstetrician and gynecologist specializing in women\'s health, prenatal care, and childbirth.',
+        acceptedInsurance: ['Star Health', 'Bajaj Allianz', 'Religare Health']
+      },
+      // Ophthalmology
+      {
+        id: 'doc9',
+        email: 'dr.shah@example.com',
+        name: 'Dr. Mihir Shah',
+        role: 'doctor',
+        profileCompleted: true,
+        specialty: 'Ophthalmology',
+        license: 'MED89012',
+        imcRegistrationNumber: 'IMC90123456',
+        education: ['Regional Institute of Ophthalmology', 'Sankara Nethralaya'],
+        experience: 10,
+        availability: {
+          'Tuesday': [{ start: '09:30', end: '13:30' }, { start: '14:30', end: '17:30' }],
+          'Thursday': [{ start: '09:30', end: '13:30' }, { start: '14:30', end: '17:30' }],
+          'Saturday': [{ start: '09:30', end: '13:30' }],
+        },
+        rating: 4.7,
+        consultationFee: 1300,
+        bio: 'Ophthalmologist specializing in cataract surgery, glaucoma, and refractive disorders.',
+        acceptedInsurance: ['Aditya Birla Health Insurance', 'Max Bupa', 'National Insurance']
+      },
+      // Orthopedics
+      {
+        id: 'doc10',
+        email: 'dr.verma@example.com',
+        name: 'Dr. Suresh Verma',
+        role: 'doctor',
+        profileCompleted: true,
+        specialty: 'Orthopedics',
+        license: 'MED90123',
+        imcRegistrationNumber: 'IMC89012345',
+        education: ['AIIMS Delhi', 'PGI Chandigarh'],
+        experience: 15,
+        availability: {
+          'Monday': [{ start: '08:00', end: '12:00' }, { start: '13:00', end: '16:00' }],
+          'Wednesday': [{ start: '08:00', end: '12:00' }, { start: '13:00', end: '16:00' }],
+          'Friday': [{ start: '08:00', end: '12:00' }],
+        },
+        rating: 4.8,
+        consultationFee: 1700,
+        bio: 'Orthopedic surgeon specializing in joint replacements, sports injuries, and trauma care.',
+        acceptedInsurance: ['Star Health', 'Bajaj Allianz', 'HDFC ERGO Health']
+      },
+      // Psychiatry
+      {
+        id: 'doc11',
+        email: 'dr.banerjee@example.com',
+        name: 'Dr. Priya Banerjee',
+        role: 'doctor',
+        profileCompleted: true,
+        specialty: 'Psychiatry',
+        license: 'MED01234',
+        imcRegistrationNumber: 'IMC78901234',
+        education: ['NIMHANS Bangalore', 'KEM Hospital Mumbai'],
+        experience: 9,
+        availability: {
+          'Tuesday': [{ start: '10:00', end: '14:00' }, { start: '15:00', end: '18:00' }],
+          'Thursday': [{ start: '10:00', end: '14:00' }, { start: '15:00', end: '18:00' }],
+          'Saturday': [{ start: '10:00', end: '14:00' }],
+        },
+        rating: 4.6,
+        consultationFee: 1500,
+        bio: 'Psychiatrist specializing in mood disorders, anxiety, and psychological therapies.',
+        acceptedInsurance: ['Star Health', 'Max Bupa', 'Religare Health']
+      },
+      // Pulmonology
+      {
+        id: 'doc12',
+        email: 'dr.kumar@example.com',
+        name: 'Dr. Rajiv Kumar',
+        role: 'doctor',
+        profileCompleted: true,
+        specialty: 'Pulmonology',
+        license: 'MED12345',
+        imcRegistrationNumber: 'IMC67890123',
+        education: ['VP Chest Institute', 'AIIMS Delhi'],
+        experience: 12,
+        availability: {
+          'Monday': [{ start: '09:00', end: '13:00' }, { start: '14:00', end: '17:00' }],
+          'Wednesday': [{ start: '09:00', end: '13:00' }, { start: '14:00', end: '17:00' }],
+          'Friday': [{ start: '09:00', end: '13:00' }],
+        },
+        rating: 4.7,
+        consultationFee: 1600,
+        bio: 'Pulmonologist specializing in respiratory disorders, sleep apnea, and critical care.',
+        acceptedInsurance: ['Aditya Birla Health Insurance', 'HDFC ERGO Health', 'National Insurance']
+      },
+      // Urology
+      {
+        id: 'doc13',
+        email: 'dr.malhotra@example.com',
+        name: 'Dr. Deepak Malhotra',
+        role: 'doctor',
+        profileCompleted: true,
+        specialty: 'Urology',
+        license: 'MED23456',
+        imcRegistrationNumber: 'IMC56789012',
+        education: ['PGIMER Chandigarh', 'Sir Ganga Ram Hospital'],
+        experience: 14,
+        availability: {
+          'Tuesday': [{ start: '08:30', end: '12:30' }, { start: '13:30', end: '16:30' }],
+          'Thursday': [{ start: '08:30', end: '12:30' }, { start: '13:30', end: '16:30' }],
+          'Saturday': [{ start: '08:30', end: '12:30' }],
+        },
+        rating: 4.8,
+        consultationFee: 1800,
+        bio: 'Urologist specializing in stone disease, urological oncology, and robotic surgeries.',
+        acceptedInsurance: ['Star Health', 'Bajaj Allianz', 'Max Bupa']
+      },
+      // Patients
       {
         id: 'patient1',
         email: 'rahul.verma@example.com',
@@ -227,16 +493,35 @@ class Database {
 
 // API service class
 class ApiService {
-  private db = new Database();
   private currentUser: User | null = null;
+  private db: Database;
   private otps: Map<string, OtpRecord> = new Map();
-
+  
   constructor() {
-    // Load the current user
-    const userJson = localStorage.getItem('user');
-    if (userJson) {
-      this.currentUser = JSON.parse(userJson);
+    this.db = new Database();
+    
+    // Restore current user from localStorage if exists
+    const storedUser = localStorage.getItem('currentUser');
+    if (storedUser) {
+      try {
+        this.currentUser = JSON.parse(storedUser);
+      } catch (e) {
+        console.error('Failed to parse stored user', e);
+        localStorage.removeItem('currentUser');
+      }
     }
+  }
+  
+  // For debugging - manually reset the database
+  resetDatabase() {
+    this.db.resetDatabase();
+    // Also clear the current user
+    this.currentUser = null;
+    localStorage.removeItem('currentUser');
+    // Display a message
+    toast.success("Database has been reset with fresh sample data", {
+      duration: 3000,
+    });
   }
 
   // Auth methods
@@ -256,7 +541,7 @@ class ApiService {
     
     // Set the current user
     this.currentUser = user;
-    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('currentUser', JSON.stringify(user));
     
     return user;
   }
@@ -283,7 +568,7 @@ class ApiService {
     
     // Set the current user
     this.currentUser = user;
-    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('currentUser', JSON.stringify(user));
     
     // If this is the first time login with OTP, mark email as verified
     if (!user.emailVerified) {
@@ -312,7 +597,7 @@ class ApiService {
     
     // Set the current user
     this.currentUser = user;
-    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('currentUser', JSON.stringify(user));
     
     return user;
   }
@@ -352,7 +637,7 @@ class ApiService {
     
     // Set as current user
     this.currentUser = newUser;
-    localStorage.setItem('user', JSON.stringify(newUser));
+    localStorage.setItem('currentUser', JSON.stringify(newUser));
     
     return newUser;
   }
@@ -540,7 +825,7 @@ class ApiService {
     
     // Update current user
     this.currentUser.biometricsEnabled = enabled;
-    localStorage.setItem('user', JSON.stringify(this.currentUser));
+    localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
     
     // If enabled, store the user for biometric login
     if (enabled) {
@@ -552,7 +837,7 @@ class ApiService {
   
   logout(): void {
     this.currentUser = null;
-    localStorage.removeItem('user');
+    localStorage.removeItem('currentUser');
   }
   
   getCurrentUser(): User | null {
@@ -611,7 +896,7 @@ class ApiService {
     
     // Update current user
     this.currentUser = user;
-    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('currentUser', JSON.stringify(user));
     
     return newPaymentMethod;
   }
@@ -650,7 +935,7 @@ class ApiService {
     
     // Update current user
     this.currentUser = user;
-    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('currentUser', JSON.stringify(user));
   }
   
   // Doctor methods
@@ -851,7 +1136,7 @@ class ApiService {
     
     // Update current user
     this.currentUser = updatedUser;
-    localStorage.setItem('user', JSON.stringify(updatedUser));
+    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
     
     return updatedUser;
   }

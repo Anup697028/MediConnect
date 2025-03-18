@@ -54,7 +54,7 @@ const LandingPage = () => {
             <div className="size-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
               MC
             </div>
-            <span className="font-semibold text-xl">MediConnect India</span>
+            <span className="font-semibold text-xl">MediConnect</span>
           </div>
           <nav className="hidden md:flex items-center gap-6">
             <a href="#features" className="text-sm hover:text-primary transition-colors">Features</a>
@@ -315,10 +315,10 @@ const LandingPage = () => {
                 <div className="size-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
                   MC
                 </div>
-                <span className="font-semibold text-xl">MediConnect India</span>
+                <span className="font-semibold text-xl">MediConnect</span>
               </div>
               <p className="text-muted-foreground max-w-xs">
-                Transforming healthcare with accessible telehealth solutions for everyone across India.
+                Transforming healthcare with accessible telehealth solutions for everyone.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-8">
@@ -334,7 +334,7 @@ const LandingPage = () => {
             </div>
           </div>
           <div className="pt-8 border-t text-center text-muted-foreground">
-            <p>&copy; {new Date().getFullYear()} MediConnect India. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} MediConnect. All rights reserved.</p>
           </div>
         </div>
       </footer>

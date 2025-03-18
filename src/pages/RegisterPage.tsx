@@ -1,11 +1,19 @@
-
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import RegisterForm from "@/components/auth/RegisterForm";
 import { Button } from "@/components/ui/button";
+import { api } from "@/services/api";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
+
+  // Check if user is already logged in
+  useEffect(() => {
+    const user = api.getCurrentUser();
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
 
   return (
     <div className="min-h-screen flex flex-col">

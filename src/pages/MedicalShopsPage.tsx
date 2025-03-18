@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,51 +13,51 @@ const MedicalShopsPage = () => {
   const medicalShops = [
     {
       id: 1,
-      name: "LifeCare Pharmacy",
-      address: "123 Health Street, Medical District",
-      phone: "+1 (555) 123-4567",
+      name: "Apollo Pharmacy",
+      address: "123 Mahatma Gandhi Road, Bangalore - 560001",
+      phone: "+91 80 2345 6789",
       hours: "9:00 AM - 9:00 PM",
       rating: 4.8,
       distance: "0.5 km",
       open: true,
       services: ["Prescription", "OTC", "Home Delivery"],
-      image: "https://placehold.co/400x300/9b87f5/white?text=LifeCare+Pharmacy"
+      image: "https://placehold.co/400x300/9b87f5/white?text=Apollo+Pharmacy"
     },
     {
       id: 2,
-      name: "Wellness Medications",
-      address: "456 Wellbeing Avenue, Health Park",
-      phone: "+1 (555) 234-5678",
+      name: "MedPlus Health Services",
+      address: "456 Nehru Place, New Delhi - 110019",
+      phone: "+91 11 4567 8901",
       hours: "8:00 AM - 10:00 PM",
       rating: 4.5,
       distance: "1.2 km",
       open: true,
       services: ["Prescription", "OTC", "Consultation"],
-      image: "https://placehold.co/400x300/9b87f5/white?text=Wellness+Medications"
+      image: "https://placehold.co/400x300/9b87f5/white?text=MedPlus+Health"
     },
     {
       id: 3,
-      name: "MediPlus Drugstore",
-      address: "789 Healing Road, Wellness Center",
-      phone: "+1 (555) 345-6789",
+      name: "Wellness Forever",
+      address: "789 Marine Drive, Mumbai - 400020",
+      phone: "+91 22 2234 5678",
       hours: "10:00 AM - 8:00 PM",
       rating: 4.2,
       distance: "2.0 km",
       open: false,
       services: ["Prescription", "OTC", "Vaccines"],
-      image: "https://placehold.co/400x300/9b87f5/white?text=MediPlus+Drugstore"
+      image: "https://placehold.co/400x300/9b87f5/white?text=Wellness+Forever"
     },
     {
       id: 4,
-      name: "QuickMeds Pharmacy",
-      address: "321 Recovery Lane, Treatment Plaza",
-      phone: "+1 (555) 456-7890",
+      name: "Netmeds Pharmacy",
+      address: "321 Anna Salai, Chennai - 600002",
+      phone: "+91 44 4567 8901",
       hours: "24 Hours",
       rating: 4.7,
       distance: "3.5 km",
       open: true,
       services: ["Prescription", "OTC", "Emergency", "Consultation"],
-      image: "https://placehold.co/400x300/9b87f5/white?text=QuickMeds+Pharmacy"
+      image: "https://placehold.co/400x300/9b87f5/white?text=Netmeds+Pharmacy"
     }
   ];
   
